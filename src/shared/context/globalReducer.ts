@@ -1,6 +1,6 @@
-import type { Project } from '@/feature/project/list/model/project';
-import type { Task } from '@/feature/project/tasks/model/task';
-import type { Reducer } from 'react';
+import type { Project } from "@/feature/project/list/model/project";
+import type { Task } from "@/feature/project/tasks/model/task";
+import type { Reducer } from "react";
 
 function syncActiveProject(
   current: Project | null,
@@ -23,17 +23,17 @@ export type GlobalState = {
 };
 
 export type GlobalAction =
-  | { type: 'ADD_PROJECT'; payload: { project: Project } }
-  | { type: 'ADD_TASK'; payload: { task: Task; projectId: string } }
-  | { type: 'REMOVE_TASK'; payload: { taskId: string } }
-  | { type: 'UPDATE_TASK'; payload: { taskId: string; task: Task } }
+  | { type: "ADD_PROJECT"; payload: { project: Project } }
+  | { type: "ADD_TASK"; payload: { task: Task; projectId: string } }
+  | { type: "REMOVE_TASK"; payload: { taskId: string } }
+  | { type: "UPDATE_TASK"; payload: { taskId: string; task: Task } }
   | {
-      type: 'UPDATE_PROJECT_TASKS_COUNT';
+      type: "UPDATE_PROJECT_TASKS_COUNT";
       payload: { projectId: string; tasksCount: number };
     }
-  | { type: 'REMOVE_PROJECT'; payload: { projectId: string } }
-  | { type: 'SET_ACTIVE_PROJECT'; payload: { project: Project } }
-  | { type: 'CLEAR_ACTIVE_PROJECT' };
+  | { type: "REMOVE_PROJECT"; payload: { projectId: string } }
+  | { type: "SET_ACTIVE_PROJECT"; payload: { project: Project } }
+  | { type: "CLEAR_ACTIVE_PROJECT" };
 
 export const initialState: GlobalState = {
   projects: [],
@@ -46,7 +46,7 @@ export const globalReducer: Reducer<GlobalState, GlobalAction> = (
   action,
 ) => {
   switch (action.type) {
-    case 'ADD_TASK': {
+    case "ADD_TASK": {
       const { task, projectId } = action.payload;
       const projects = state.projects.map((p) =>
         p.id === projectId ? { ...p, tasksCount: p.tasksCount + 1 } : p,
@@ -58,7 +58,7 @@ export const globalReducer: Reducer<GlobalState, GlobalAction> = (
         activeProject: syncActiveProject(state.activeProject, projects),
       };
     }
-    case 'REMOVE_TASK': {
+    case "REMOVE_TASK": {
       const removed = state.tasks.find((t) => t.id === action.payload.taskId);
       const projectId = removed?.projectId;
       const projects =
@@ -76,14 +76,14 @@ export const globalReducer: Reducer<GlobalState, GlobalAction> = (
         activeProject: syncActiveProject(state.activeProject, projects),
       };
     }
-    case 'UPDATE_TASK': {
+    case "UPDATE_TASK": {
       const { taskId, task } = action.payload;
       return {
         ...state,
         tasks: state.tasks.map((t) => (t.id === taskId ? task : t)),
       };
     }
-    case 'UPDATE_PROJECT_TASKS_COUNT': {
+    case "UPDATE_PROJECT_TASKS_COUNT": {
       const { projectId, tasksCount } = action.payload;
       const projects = state.projects
         .map((p) => (p.id === projectId ? { ...p, tasksCount } : p))
@@ -94,7 +94,7 @@ export const globalReducer: Reducer<GlobalState, GlobalAction> = (
         activeProject: syncActiveProject(state.activeProject, projects),
       };
     }
-    case 'ADD_PROJECT': {
+    case "ADD_PROJECT": {
       const { project } = action.payload;
       const projects = [...state.projects, project];
       return {
@@ -103,23 +103,28 @@ export const globalReducer: Reducer<GlobalState, GlobalAction> = (
         activeProject: syncActiveProject(state.activeProject, projects),
       };
     }
-    case 'REMOVE_PROJECT': {
-      const projects = state.projects.filter(
-        (p) => p.id !== action.payload.projectId,
-      );
+
+    case "REMOVE_PROJECT": {
+      const { projectId } = action.payload;
+
+      const projects = state.projects.filter((p) => p.id !== projectId);
+      const tasks = state.tasks.filter((t) => t.projectId !== projectId);
+
       return {
         ...state,
         projects,
+        tasks,
         activeProject: syncActiveProject(state.activeProject, projects),
       };
     }
-    case 'SET_ACTIVE_PROJECT': {
+
+    case "SET_ACTIVE_PROJECT": {
       return {
         ...state,
         activeProject: action.payload.project,
       };
     }
-    case 'CLEAR_ACTIVE_PROJECT': {
+    case "CLEAR_ACTIVE_PROJECT": {
       return {
         ...state,
         activeProject: null,
