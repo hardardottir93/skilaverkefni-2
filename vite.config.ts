@@ -1,11 +1,11 @@
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
 
 const dirname =
-  typeof __dirname !== 'undefined'
+  typeof __dirname !== "undefined"
     ? __dirname
     : path.dirname(fileURLToPath(import.meta.url));
 
@@ -14,9 +14,14 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      '@': path.resolve(dirname, './src'),
-      '@feature': path.resolve(dirname, './src/feature'),
-      '@shared': path.resolve(dirname, './src/shared'),
+      "@": path.resolve(dirname, "./src"),
+      "@feature": path.resolve(dirname, "./src/feature"),
+      "@shared": path.resolve(dirname, "./src/shared"),
     },
+  },
+  test: {
+    environment: "jsdom",
+    setupFiles: "./src/test/setup.ts",
+    globals: true,
   },
 });
