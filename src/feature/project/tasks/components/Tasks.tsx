@@ -4,14 +4,14 @@ import {
   CardContent,
   CardTitle,
   CardDescription,
-} from '@/shared/components/ui/card';
-import { Dialog, DialogContent } from '@/shared/components/ui/dialog';
-import { useGlobalContext } from '@/shared/context';
-import { useState } from 'react';
-import type { Task } from '../model/task';
-import TaskForm from './TaskForm';
-import AddTask from './AddTask';
-import { TaskTable } from './task-table/TaskTable';
+} from "@/shared/components/ui/card";
+import { Dialog, DialogContent } from "@/shared/components/ui/dialog";
+import { useGlobalContext } from "@/shared/context";
+import { useState } from "react";
+import type { Task } from "../model/task";
+import TaskForm from "./TaskForm";
+import AddTask from "./AddTask";
+import { TaskTable } from "./task-table/TaskTable";
 
 function Tasks() {
   const { activeProject } = useGlobalContext();
@@ -46,7 +46,8 @@ function Tasks() {
           {activeProject ? (
             <TaskTable
               projectId={activeProject.id}
-              onEditTask={() => {
+              onEditTask={(task) => {
+                setEditingTask(task);
                 setTaskFormOpen(true);
               }}
             />
@@ -57,7 +58,7 @@ function Tasks() {
       </Card>
       <DialogContent className="gap-0 sm:max-w-md">
         <TaskForm
-          key={editingTask?.id ?? 'add-task'}
+          key={editingTask?.id ?? "add-task"}
           taskToEdit={editingTask}
           onClose={() => handleTaskDialogOpenChange(false)}
         />
